@@ -4,13 +4,13 @@ use serde::{Serialize, Serializer};
 use serde::ser::SerializeStruct;
 
 #[derive(Debug, Serialize)]
-pub enum PDA<> {
-    States(Vec<State>),
-    InputAlpha(Vec<String>),
-    StackAlpha(Vec<String>),
-    StartState(State),
-    AcceptStates(Vec<State>),
-    Transitions(State, char, char, State, char),
+pub struct PDA<> {
+    states: Vec<State>,
+    input_alpha: Vec<String>,
+    stack_alpha: Vec<String>,
+    start_state: State,
+    accept_states: Vec<State>,
+    transitions: (State, char, char, State, char),
 }
 
 #[derive(Debug)]

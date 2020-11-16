@@ -24,6 +24,8 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let mut accep_state: String = String::new();
     let mut transitions: String = String::new();
 
+    let states;
+
     for pda in file.into_inner() {
         match pda.as_rule() {
             Rule::states => {
@@ -51,7 +53,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
                     accep_state.push_str(state.as_str())
                 }
             },
-            Rule::transition => {
+            Rule::trans => {
                 for trans_set in pda.into_inner() {
                     let mut inner_rules = pda.into_inner();
 
@@ -60,7 +62,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
                     let t_symb: &str = inner_rules.next().unwrap().as_str();
                     let t_next: &str = inner_rules.next().unwrap().as_str();
                     let t_new: &str = inner_rules.next().unwrap().as_str();
-                    let pushing =  format!("{},{},{},{},{}",t_state, t_input, t_state, t_next, t_symb);
+                    let pushing =  format!("{},{},{},{},{}",t_state, t_input, t_symb, t_next, t_new);
                     transitions.push_str(&pushing);
                 }
             },                   

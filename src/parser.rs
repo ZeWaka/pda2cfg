@@ -60,10 +60,10 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
                     let pushing =  format!("{},{},{},{},{}",t_state, t_input, t_symb, t_next, t_new);
                     transitions.push_str(&pushing);
                 }
-            },                   
+            },
+
             Rule::EOI => (),
             _ => unreachable!(),
-
         }
     }
 

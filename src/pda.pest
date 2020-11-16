@@ -1,21 +1,21 @@
 state = { (ASCII_ALPHANUMERIC)+ }
-alpha_d = { ASCII_ALPHA | "$" }
+word = { ASCII_ALPHANUMERIC+ }
 epsilon = { "~" }
 
 states = { state ~ ("," ~ state)* }
 
-ialpha = { alpha_d ~ ("," ~ alpha_d)* }
-salpha = { alpha_d ~ ("," ~ alpha_d)* }
+ialpha = { ASCII_ALPHANUMERIC ~ ("," ~ ASCII_ALPHANUMERIC)* }
+salpha = { ASCII_ALPHANUMERIC | "$" ~ ("," ~ ASCII_ALPHANUMERIC | "$")* }
 
 start = { state }
 
 accept = { state ~ ("," ~ state)* }
 
 t_state = { state }
-t_input = { alpha_d | epsilon }
-t_symb = { alpha_d | epsilon }
+t_input = { word | epsilon | "$" }
+t_symb = { word | epsilon | "$" }
 t_next = { state }
-t_new = { alpha_d | epsilon }
+t_new = { word | epsilon | "$" }
 
 trans_set = { t_state ~ "," ~ t_input ~ "," ~ t_symb ~ "," ~ t_next ~ "," ~ t_new }
 trans = { trans_set ~ (";" ~ trans_set)* }

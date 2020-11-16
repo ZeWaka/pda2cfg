@@ -3,6 +3,9 @@ use std::error::Error;
 use pest::Parser;
 use std::fs;
 
+mod ast;
+use ast::*;
+
 #[derive(Parser)]
 #[grammar = "pda.pest"]
 pub struct PDAParser;
@@ -48,7 +51,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
                     accep_state.push_str(state.as_str())
                 }
             },
-            Rule::trans => {
+            Rule::transition => {
                 for trans_set in pda.into_inner() {
                     let mut inner_rules = pda.into_inner();
 

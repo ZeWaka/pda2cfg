@@ -4,6 +4,8 @@ use pest::Parser;
 use pest::iterators::Pair;
 use std::fs;
 
+#[path = "pda.rs"] mod pda;
+
 #[derive(Parser)]
 #[grammar = "pda.pest"]
 pub struct PDAParser;
@@ -31,7 +33,7 @@ fn create_pda_struct(pair: Pair<Rule>) -> () {
     let mut stack_alpha: Vec<String> = vec![];
     let mut start_state: String = String::new();
     let mut accep_state: Vec<String> = vec![];
-    let mut transitions: Vec<Vec<String>> = vec![];
+    let mut transitions: Vec<(String, String, String, String, String)> = vec![];
 
     let pda = pair.into_inner();
     for inner in pda {
@@ -70,7 +72,7 @@ fn create_pda_struct(pair: Pair<Rule>) -> () {
                     let t_symb: String = t_rules.next().unwrap().as_str().to_owned();
                     let t_next: String = t_rules.next().unwrap().as_str().to_owned();
                     let t_new: String = t_rules.next().unwrap().as_str().to_owned();
-                    let transition = vec![t_state, t_input, t_symb, t_next, t_new];
+                    let transition = (t_state, t_input, t_symb, t_next, t_new);
                     transitions.push(transition);
                 }
             },
@@ -78,12 +80,17 @@ fn create_pda_struct(pair: Pair<Rule>) -> () {
         }
     }
 
-    println!("states: {}", states.join(","));
-    println!("ialpha: {}", input_alpha.join(","));
-    println!("salpha: {}", stack_alpha.join(","));
-    println!("start: {}", start_state);
-    println!("accept: {}", accep_state.join(","));
-    println!("trans: {:?}", transitions);
+    let mut generated = pda::PDA::build();
+    generated.set_states(states);
+    generated.set_ialpha(input_alpha);
+    generated.set_salpha(stack_alpha);
+    generated.set_start(start_state);
+    generated.set_accept(accep_state);
+    generated.set_trans(transitions);
+
+    let seralized = serde_json::to_string(&generated).unwrap();
+
+    println!("generated: {}", seralized);
 
 }
 

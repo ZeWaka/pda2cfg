@@ -4,7 +4,7 @@ use pest::Parser;
 use std::fs;
 
 #[derive(Parser)]
-#[grammar = "parser.pest"]
+#[grammar = "csv.pest"]
 pub struct CSVParser;
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
@@ -43,9 +43,9 @@ pub struct Config {
 impl Config {
     pub fn new(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 2 {
-            return Err("not enough arguments");
+            return Err("not enough arguments (expected 1 filename)");
         }
-        
+
         let filename = args[1].clone();
 
         Ok(Config { filename })

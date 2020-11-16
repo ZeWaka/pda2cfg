@@ -8,7 +8,6 @@ mod parser;
 use parser::Config;
 
 mod ast;
-use ast::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

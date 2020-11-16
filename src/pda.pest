@@ -1,29 +1,30 @@
-state = { (ASCII_ALPHANUMERIC)+ }
+state = { ASCII_ALPHANUMERIC+ }
 word = { ASCII_ALPHANUMERIC+ }
 epsilon = { "~" }
+dollar = { "$" }
 
 states = { state ~ ("," ~ state)* }
 
-ialpha = { ASCII_ALPHANUMERIC ~ ("," ~ ASCII_ALPHANUMERIC)* }
-salpha = { ASCII_ALPHANUMERIC | "$" ~ ("," ~ ASCII_ALPHANUMERIC | "$")* }
+ialpha = { ASCII_ALPHANUMERIC+ ~ ("," ~ ASCII_ALPHANUMERIC+)* }
+salpha = { (ASCII_ALPHANUMERIC+ | dollar) ~ ("," ~ (ASCII_ALPHANUMERIC+ | dollar))* }
 
 start = { state }
 
-accept = { state ~ ("," ~ state)* }
+accept = { states }
 
 t_state = { state }
-t_input = { word | epsilon | "$" }
-t_symb = { word | epsilon | "$" }
+t_input = { word | epsilon | dollar }
+t_symb = { word | epsilon | dollar }
 t_next = { state }
-t_new = { word | epsilon | "$" }
+t_new = { word | epsilon | dollar }
 
-trans_set = { t_state ~ "," ~ t_input ~ "," ~ t_symb ~ "," ~ t_next ~ "," ~ t_new }
-trans = { trans_set ~ (";" ~ trans_set)* }
+trans_set = { t_state ~ "," ~ t_input ~ "," ~ t_symb ~ "," ~ t_next ~ "," ~ t_new ~ ";" }
+trans = { trans_set ~ (trans_set)*}
 
-pda = { states ~ "|" ~ ialpha ~ "|" ~ salpha ~ "|" ~ start ~ "|" ~ accept ~ "|" ~ trans}
+pda = { states ~ "|" ~ ialpha ~ "|" ~ salpha ~ "|" ~ start ~ "|" ~ accept ~ "|" ~ trans }
 
-file = { SOI ~ (pda ~ ("\r\n" | "\n"))* ~ EOI }
+file = { SOI ~ pda ~ EOI }
 
-WHITESPACE = _{ " " }
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" | "\r\n" }
 
 // Epsilon is ~

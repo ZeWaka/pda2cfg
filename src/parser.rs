@@ -3,9 +3,6 @@ use std::error::Error;
 use pest::Parser;
 use std::fs;
 
-mod ast;
-use ast::*;
-
 #[derive(Parser)]
 #[grammar = "pda.pest"]
 pub struct PDAParser;
@@ -24,12 +21,10 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let mut accep_state: String = String::new();
     let mut transitions: String = String::new();
 
-    let states;
-
     for pda in file.into_inner() {
         match pda.as_rule() {
             Rule::states => {
-                for state in pda.into_inner() {
+                for _state in pda.into_inner() {
                     state_count += 1;
                 }
             },
@@ -55,7 +50,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
             },
             Rule::trans => {
                 for trans_set in pda.into_inner() {
-                    let mut inner_rules = pda.into_inner();
+                    let mut inner_rules = trans_set.into_inner();
 
                     let t_state: &str = inner_rules.next().unwrap().as_str();
                     let t_input: &str = inner_rules.next().unwrap().as_str();
@@ -81,6 +76,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
 pub struct Config {
     pub filename: String
 }

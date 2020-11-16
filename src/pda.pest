@@ -1,7 +1,9 @@
 state = { (ASCII_ALPHANUMERIC)+ }
+alpha_d = { ASCII_ALPHA | "$" }
+epsilon = { "~" }
+
 states = { state ~ ("," ~ state)* }
 
-alpha_d = { ASCII_ALPHA | "$" }
 ialpha = { alpha_d ~ ("," ~ alpha_d)* }
 salpha = { alpha_d ~ ("," ~ alpha_d)* }
 
@@ -10,10 +12,10 @@ start = { state }
 accept = { state ~ ("," ~ state)* }
 
 t_state = { state }
-t_input = { alpha_d | "eps" }
-t_symb = { alpha_d | "eps" }
+t_input = { alpha_d | epsilon }
+t_symb = { alpha_d | epsilon }
 t_next = { state }
-t_new = { alpha_d | "eps" }
+t_new = { alpha_d | epsilon }
 
 trans_set = { t_state ~ "," ~ t_input ~ "," ~ t_symb ~ "," ~ t_next ~ "," ~ t_new }
 trans = { trans_set ~ (";" ~ trans_set)* }
@@ -23,3 +25,5 @@ pda = { states ~ "|" ~ ialpha ~ "|" ~ salpha ~ "|" ~ start ~ "|" ~ accept ~ "|" 
 file = { SOI ~ (pda ~ ("\r\n" | "\n"))* ~ EOI }
 
 WHITESPACE = _{ " " }
+
+// Epsilon is ~

@@ -5,8 +5,8 @@ dollar = { "$" }
 
 states = { state ~ ("," ~ state)* }
 
-ialpha = { ASCII_ALPHANUMERIC+ ~ ("," ~ ASCII_ALPHANUMERIC+)* }
-salpha = { (ASCII_ALPHANUMERIC+ | dollar) ~ ("," ~ (ASCII_ALPHANUMERIC+ | dollar))* }
+ialpha = { word ~ ("," ~ word)* }
+salpha = { (word | dollar) ~ ("," ~ (word| dollar))* }
 
 start = { state }
 

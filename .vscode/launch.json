@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'pdacfg'",
+            "name": "Debug executable 'pda2cfg'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=pdacfg",
-                    "--package=pdacfg"
+                    "--bin=pda2cfg",
+                    "--package=pda2cfg"
                 ],
                 "filter": {
-                    "name": "pdacfg",
+                    "name": "pda2cfg",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'pdacfg'",
+            "name": "Debug unit tests in executable 'pda2cfg'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=pdacfg",
-                    "--package=pdacfg"
+                    "--bin=pda2cfg",
+                    "--package=pda2cfg"
                 ],
                 "filter": {
-                    "name": "pdacfg",
+                    "name": "pda2cfg",
                     "kind": "bin"
                 }
             },

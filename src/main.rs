@@ -1,3 +1,10 @@
+#![deny(clippy::complexity,
+    clippy::correctness,
+    clippy::perf,
+    clippy::style,
+    unsafe_code,
+    broken_intra_doc_links
+)]
 
 extern crate pest;
 #[macro_use]

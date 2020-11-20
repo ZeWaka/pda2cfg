@@ -4,7 +4,8 @@ use pest::Parser;
 use pest::iterators::Pair;
 use std::fs;
 
-#[path = "pda.rs"] mod pda;
+use crate::lib::pda;
+#[path = "transformer.rs"] mod transformer;
 
 #[derive(Parser)]
 #[grammar = "pda.pest"]
@@ -17,17 +18,32 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         .expect("unsuccessful parse") // unwrap the parse result
         .next().unwrap(); // get and unwrap the `file` rule; never fails
 
+    let mut result_pda = pda::PDA::build();
+
     for pair in file.into_inner() {
         match pair.as_rule() {
-            Rule::pda => create_pda_struct(pair),
+            Rule::pda => create_pda_struct(&mut result_pda, pair),
             Rule::EOI => (),
             _ => unreachable!(),
         }
     }
+
+    // Time for our rules
+    if let Err(e) = transformer::ensure_accept(&result_pda) {
+        println!("{}", e);
+    }
+    if let Err(e) = transformer::single_accept(&result_pda) {
+        println!("{}", e);
+    }
+
+    let seralized = serde_json::to_string(&result_pda).unwrap();
+
+    println!("generated: {}", seralized);
+
     Ok(())
 }
 
-fn create_pda_struct(pair: Pair<Rule>) -> () {
+fn create_pda_struct(passed: &mut pda::PDA, pair: Pair<Rule>) -> () {
     let mut states: Vec<String> = vec![];
     let mut input_alpha: Vec<String> = vec![];
     let mut stack_alpha: Vec<String> = vec![];
@@ -79,18 +95,12 @@ fn create_pda_struct(pair: Pair<Rule>) -> () {
             _ => unreachable!(),
         }
     }
-
-    let mut generated = pda::PDA::build();
-    generated.set_states(states);
-    generated.set_ialpha(input_alpha);
-    generated.set_salpha(stack_alpha);
-    generated.set_start(start_state);
-    generated.set_accept(accep_state);
-    generated.set_trans(transitions);
-
-    let seralized = serde_json::to_string(&generated).unwrap();
-
-    println!("generated: {}", seralized);
+    passed.set_states(states);
+    passed.set_ialpha(input_alpha);
+    passed.set_salpha(stack_alpha);
+    passed.set_start(start_state);
+    passed.set_accept(accep_state);
+    passed.set_trans(transitions);
 
 }
 

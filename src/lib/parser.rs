@@ -49,7 +49,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     let seralized = serde_json::to_string_pretty(&result_cfg).unwrap();
 
-    println!("generated: {}", seralized);
+    println!("{}", seralized);
 
     Ok(())
 }

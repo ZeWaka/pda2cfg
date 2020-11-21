@@ -1,19 +1,18 @@
 extern crate serde;
 
-use serde::{Serialize, Deserialize};
+use serde::{Serialize};
 
-/// We represent epsilon transitions with a ~
+/// We represent epsilon transitions with a ~  (also blank input/output)
 pub static EPSILON: &'static str = "~";
 
 /// Our PDA struct
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Clone)]
 pub struct PDA<> {
     pub states: Vec<String>,
     pub input_alphabet: Vec<String>,
     pub stack_alphabet: Vec<String>,
     pub start_state: String,
     pub accept_states: Vec<String>,
-    /// state, input, symbol, next, new
     pub transitions: Vec<Trans>,
 }
 
@@ -63,7 +62,7 @@ impl<> PDA<> {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Clone)]
 pub struct Trans<> {
     pub state: String,
     pub input: String,

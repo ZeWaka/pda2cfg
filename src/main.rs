@@ -1,4 +1,5 @@
-#![deny(clippy::complexity,
+#![deny(
+    clippy::complexity,
     clippy::correctness,
     clippy::perf,
     clippy::style,

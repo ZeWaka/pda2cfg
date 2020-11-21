@@ -1,4 +1,3 @@
-
 use serde::Serialize;
 
 /// We represent epsilon transitions with a ~  (also blank input/output)
@@ -6,7 +5,7 @@ pub static EPSILON: &'static str = "~";
 
 /// Our PDA struct
 #[derive(Debug, Serialize, Clone)]
-pub struct PDA<> {
+pub struct PDA {
     pub states: Vec<String>,
     pub input_alphabet: Vec<String>,
     pub stack_alphabet: Vec<String>,
@@ -15,7 +14,7 @@ pub struct PDA<> {
     pub transitions: Vec<Trans>,
 }
 
-impl<> PDA<> {
+impl PDA {
     /// When called, builds an empty PDA
     pub fn build() -> PDA {
         PDA {
@@ -62,7 +61,7 @@ impl<> PDA<> {
 }
 
 #[derive(Debug, Serialize, Clone)]
-pub struct Trans<> {
+pub struct Trans {
     pub state: String,
     pub input: String,
     pub pop: String,
@@ -70,6 +69,14 @@ pub struct Trans<> {
     pub push: String,
 }
 
-impl<> Trans<> {
-    pub fn new(state: String, input: String, symbol: String, next: String, new: String) -> Self { Self { state, input, pop: symbol, next, push: new } }
+impl Trans {
+    pub fn new(state: String, input: String, symbol: String, next: String, new: String) -> Self {
+        Self {
+            state,
+            input,
+            pop: symbol,
+            next,
+            push: new,
+        }
+    }
 }

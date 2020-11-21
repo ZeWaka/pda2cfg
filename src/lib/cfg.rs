@@ -1,16 +1,13 @@
-
-use serde::ser::{Serialize, Serializer, SerializeStruct};
+use serde::ser::{Serialize, SerializeStruct, Serializer};
 
 #[derive(Debug)]
-pub struct CFG<> {
-    pub rules: Vec<Grammar>
+pub struct CFG {
+    pub rules: Vec<Grammar>,
 }
 
-impl<> CFG<> {
+impl CFG {
     pub fn build() -> CFG {
-        CFG {
-            rules: vec![],
-        }
+        CFG { rules: vec![] }
     }
 }
 
@@ -26,13 +23,18 @@ impl Serialize for CFG {
 }
 
 #[derive(Debug)]
-pub struct Grammar<> {
+pub struct Grammar {
     pub rule_name: String,
     pub rule_desc: String,
 }
 
-impl<> Grammar<> {
-    pub fn new(rule_name: String, rule_desc: String) -> Self { Self { rule_name, rule_desc } }
+impl Grammar {
+    pub fn new(rule_name: String, rule_desc: String) -> Self {
+        Self {
+            rule_name,
+            rule_desc,
+        }
+    }
 }
 
 impl Serialize for Grammar {
@@ -41,7 +43,10 @@ impl Serialize for Grammar {
         S: Serializer,
     {
         let mut state = serializer.serialize_struct("Grammar", 2)?;
-        state.serialize_field("Rule", &format!("{} -> {}", &self.rule_name, &self.rule_desc))?;
+        state.serialize_field(
+            "Rule",
+            &format!("{} -> {}", &self.rule_name, &self.rule_desc),
+        )?;
         state.end()
     }
 }

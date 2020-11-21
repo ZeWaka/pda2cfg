@@ -69,7 +69,7 @@ pub fn eps_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
     }
 }
 
-/// For every triplet of states, Aij -> AikAjk
+/// For every triplet of states, Aij -> AikAkj
 pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
     for state_i in pda.states.iter() {
         for state_j in pda.states.iter() {
@@ -99,11 +99,11 @@ pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
 pub fn pair_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
     for trans_a in pda.transitions.iter() {
         for trans_b in pda.transitions.iter() {
-            if trans_a.push.eq(&trans_b.input) {
-                if trans_a.push.eq(&"~".to_string()) { // ignore blanks
+            if trans_a.push.eq(&trans_b.pop) {
+                if trans_a.input.eq(&"~".to_string()) { // ignore blanks
                     continue;
                 }
-                let rule_desc = format!("{}A{}{}{}", trans_a.push, trans_a.state, trans_b.state, trans_b.push);
+                let rule_desc = format!("{}A{}{}{}", trans_a.input, trans_a.state, trans_b.state, trans_b.input);
                 let rule_name = format!("A{}{}", trans_a.state, trans_b.state);
 
                 let mut found = false;

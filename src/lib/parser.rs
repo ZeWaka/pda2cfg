@@ -1,12 +1,12 @@
 use std::error::Error;
+use std::fs;
 
 use pest::Parser;
 use pest::iterators::Pair;
-use std::fs;
 
 use crate::lib::pda;
 use crate::lib::cfg;
-#[path = "transformer.rs"] mod transformer;
+use crate::lib::transformer;
 
 #[derive(Parser)]
 #[grammar = "pda.pest"]

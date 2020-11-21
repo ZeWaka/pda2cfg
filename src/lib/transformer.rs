@@ -73,21 +73,19 @@ pub fn eps_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
 pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
     for state_i in pda.states.iter() {
         for state_j in pda.states.iter() {
-            for state_k in pda.states.iter() {
+            'kloop: for state_k in pda.states.iter() {
                 if state_i.eq("q_accept") || state_j.eq("q_accept") || state_k.eq("q_accept") { // ignore created accept state
                     continue;
                 }
                 let rule_name = format!("A{}{}", state_i, state_j);
                 let rule_desc = format!("A{}{}A{}{}", state_i, state_k, state_k, state_j);
 
-                let mut found = false;
                 for mut rule in cfg.rules.iter_mut() {
                     if rule.rule_name.eq(&rule_name) {
                         rule.rule_desc = format!("{} | {}", rule.rule_desc, rule_desc);
-                        found = true;
+                        break 'kloop
                     }
                 }
-                if found { break }
 
                 cfg.rules.push(cfg::Grammar::new(rule_name, rule_desc))
             }
@@ -98,7 +96,7 @@ pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
 /// For every stack symbol that could be pushed then popped, record states in the middle
 pub fn pair_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
     for trans_a in pda.transitions.iter() {
-        for trans_b in pda.transitions.iter() {
+        'bloop: for trans_b in pda.transitions.iter() {
             if trans_a.push.eq(&trans_b.pop) {
                 if trans_a.input.eq(&"~".to_string()) { // ignore blanks
                     continue;
@@ -106,14 +104,12 @@ pub fn pair_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
                 let rule_desc = format!("{}A{}{}{}", trans_a.input, trans_a.state, trans_b.state, trans_b.input);
                 let rule_name = format!("A{}{}", trans_a.state, trans_b.state);
 
-                let mut found = false;
                 for mut rule in cfg.rules.iter_mut() {
                     if rule.rule_name.eq(&rule_name) {
                         rule.rule_desc = format!("{} | {}", rule.rule_desc, rule_desc);
-                        found = true;
+                        break 'bloop
                     }
                 }
-                if found { break }
 
                 cfg.rules.push(cfg::Grammar::new(rule_name, rule_desc))
             }

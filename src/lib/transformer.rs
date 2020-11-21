@@ -78,7 +78,7 @@ pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
                     continue;
                 }
                 let rule_name = format!("A{}{}", state_i, state_j);
-                let rule_desc = format!("A{}{}A{}{}", state_i, state_k, state_j, state_k);
+                let rule_desc = format!("A{}{}A{}{}", state_i, state_k, state_k, state_j);
 
                 let mut found = false;
                 for mut rule in cfg.rules.iter_mut() {

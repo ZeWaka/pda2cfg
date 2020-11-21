@@ -36,6 +36,9 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         println!("{}", e);
     }
     // Time for our rules
+    if let Err(e) = transformer::eps_rule(&mut result_pda) {
+        println!("{}", e);
+    }
 
     let seralized = serde_json::to_string_pretty(&result_pda).unwrap();
 

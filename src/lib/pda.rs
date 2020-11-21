@@ -17,20 +17,6 @@ pub struct PDA<> {
     pub transitions: Vec<Trans>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Trans<> {
-    pub state: String,
-    pub input: String,
-    pub symbol: String,
-    pub next: String,
-    pub new: String,
-}
-
-impl<> Trans<> {
-    pub fn new(state: String, input: String, symbol: String, next: String, new: String) -> Self { Self { state, input, symbol, next, new } }
-}
-
-
 impl<> PDA<> {
     /// When called, builds an empty PDA
     pub fn build() -> PDA {
@@ -75,4 +61,17 @@ impl<> PDA<> {
             self.transitions.push(tuple);
         }
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Trans<> {
+    pub state: String,
+    pub input: String,
+    pub symbol: String,
+    pub next: String,
+    pub new: String,
+}
+
+impl<> Trans<> {
+    pub fn new(state: String, input: String, symbol: String, next: String, new: String) -> Self { Self { state, input, symbol, next, new } }
 }

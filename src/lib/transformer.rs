@@ -41,7 +41,7 @@ pub fn single_accept(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
     for state in pda_states {
         for final_state in pda.accept_states.iter() {
             if state.to_string().eq(final_state) {
-                to_push.push(pda::Trans::new(format!("q_acc_{}", state), pda::EPSILON.into(), "".into(), "q_accept".into(), "".into()));
+                to_push.push(pda::Trans::new(format!("A_acc-{}", state), pda::EPSILON.into(), "".into(), "q_accept".into(), "".into()));
             }
         }
     }
@@ -54,22 +54,23 @@ pub fn single_accept(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
     Ok(pda)
 }
 
-pub fn empty_stack(pda: pda::PDA) -> pda::PDA {
-    pda
+pub fn empty_stack(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
+    Ok(pda)
 }
 
-pub fn pp_rule(pda: pda::PDA) -> pda::PDA {
-    pda
+/// For every state, make an epsilon transition to itself
+pub fn eps_rule(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
+    for state in pda.states.iter() {
+        pda.transitions.push(pda::Trans::new(state.into(), pda::EPSILON.into(), "".into(), state.into(), "".into()))
+    }
+
+    Ok(pda)
 }
 
-pub fn pair_rule(pda: pda::PDA) -> pda::PDA {
-    pda
+pub fn ijk_rule(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError>{
+    Ok(pda)
 }
 
-pub fn eps_rule(pda: pda::PDA) -> pda::PDA {
-    pda
-}
-
-pub fn ijk_rule(pda: pda::PDA) -> pda::PDA {
-    pda
+pub fn pair_rule(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
+    Ok(pda)
 }

@@ -1,5 +1,6 @@
 
 use crate::lib::pda;
+use crate::lib::cfg;
 use snafu::Snafu;
 
 #[derive(Debug, Snafu)]
@@ -10,8 +11,8 @@ pub enum PDAError {
     NoAccept
 }
 
-
-pub fn ensure_accept_nostates(pda: &pda::PDA) -> Result<&pda::PDA, PDAError> {
+/// Ensures that the pda has states and accept states
+pub fn ensure_accept_nostates(pda: pda::PDA) -> Result<pda::PDA, PDAError> { // Errors don't work like I want, due to the parser failing first
     if pda.accept_states.is_empty() {
         return NoAccept.fail()
     }
@@ -21,11 +22,15 @@ pub fn ensure_accept_nostates(pda: &pda::PDA) -> Result<&pda::PDA, PDAError> {
     Ok(pda)
 }
 
+pub fn empty_stack(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
+    Ok(pda)
+}
+
 /**
   * To ensure a single accept state, we set our accept state to a new state q_accept.
   * We also ensure that all previous accepting states have an epsilion transition to q_accept.
   */
-pub fn single_accept(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
+pub fn single_accept(pda: &mut pda::PDA) -> () {
 
     // If epsilon is not present, push it
     pda.states.push("q_accept".into());
@@ -51,26 +56,43 @@ pub fn single_accept(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
     pda.accept_states.clear();
     pda.accept_states.push("q_accept".into());
 
-    Ok(pda)
 }
 
-pub fn empty_stack(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
-    Ok(pda)
-}
-
-/// For every state, make an epsilon transition to itself
-pub fn eps_rule(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
+/// For every state, make an epsilon rule
+pub fn eps_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
     for state in pda.states.iter() {
-        pda.transitions.push(pda::Trans::new(state.into(), pda::EPSILON.into(), "".into(), state.into(), "".into()))
+        if state.eq("q_accept") { //Not necessary
+            continue;
+        }
+        cfg.rules.push(cfg::Grammar::new(format!("A_{}_{}", state, state), pda::EPSILON.into()));
     }
-
-    Ok(pda)
 }
 
-pub fn ijk_rule(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError>{
-    Ok(pda)
+pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
+    for state_i in pda.states.iter() {
+        for state_j in pda.states.iter() {
+            for state_k in pda.states.iter() {
+                if state_i.eq("q_accept") || state_j.eq("q_accept") || state_k.eq("q_accept") {
+                    continue;
+                }
+                let rule_desc = format!("A_{}{}A_{}{}", state_i, state_k, state_j, state_k);
+                cfg.rules.push(cfg::Grammar::new(format!("A_{}{}", state_i, state_j), rule_desc));
+            }
+        }
+    }
 }
 
-pub fn pair_rule(pda: &mut pda::PDA) -> Result<&pda::PDA, PDAError> {
-    Ok(pda)
+pub fn pair_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
+    for trans_a in pda.transitions.iter() {
+        for trans_b in pda.transitions.iter() {
+            if trans_a.new.eq(&trans_b.input) {
+                if trans_a.new.eq(&"~".to_string()) { // ignore blanks
+                    continue;
+                }
+                let rule_desc = format!("{}A_{}{}{}", trans_a.new, trans_a.state, trans_b.state, trans_b.new);
+                let g = cfg::Grammar::new(format!("A_{}_{}", trans_a.state, trans_b.state), rule_desc);
+                cfg.rules.push(g)
+            }
+        }
+    }
 }

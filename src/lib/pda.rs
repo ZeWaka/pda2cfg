@@ -6,7 +6,7 @@ use serde::{Serialize, Deserialize};
 pub static EPSILON: &'static str = "~";
 
 /// Our PDA struct
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PDA<> {
     pub states: Vec<String>,
     pub input_alphabet: Vec<String>,
@@ -63,7 +63,7 @@ impl<> PDA<> {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Trans<> {
     pub state: String,
     pub input: String,

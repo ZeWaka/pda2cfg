@@ -5,6 +5,7 @@ use pest::iterators::Pair;
 use std::fs;
 
 use crate::lib::pda;
+use crate::lib::cfg;
 #[path = "transformer.rs"] mod transformer;
 
 #[derive(Parser)]
@@ -18,29 +19,35 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         .expect("unsuccessful parse") // unwrap the parse result
         .next().unwrap(); // get and unwrap the `file` rule; never fails
 
-    let mut result_pda = pda::PDA::build();
+    let mut our_pda = pda::PDA::build();
 
     for pair in file.into_inner() {
         match pair.as_rule() {
-            Rule::pda => setup_pda(&mut result_pda, pair),
+            Rule::pda => setup_pda(&mut our_pda, pair),
             Rule::EOI => (),
             _ => unreachable!(),
         }
     }
 
+    let mut result_cfg = cfg::CFG::build();
+
     // Prelim checks
-    if let Err(e) = transformer::ensure_accept_nostates(&result_pda) {
-        println!("{}", e);
-    }
-    if let Err(e) = transformer::single_accept(&mut result_pda) {
-        println!("{}", e);
-    }
-    // Time for our rules
-    if let Err(e) = transformer::eps_rule(&mut result_pda) {
+    if let Err(e) = transformer::ensure_accept_nostates(our_pda.clone()) {
         println!("{}", e);
     }
 
-    let seralized = serde_json::to_string_pretty(&result_pda).unwrap();
+    // PDA modification
+    transformer::single_accept(&mut our_pda);
+
+    // Start generation of CFG
+    result_cfg.rules.push(cfg::Grammar::new("S".into(), format!("A_{}_{}", our_pda.start_state.clone(), "q_accept")));
+
+    // Time for our rules
+    transformer::eps_rule(&our_pda, &mut result_cfg);
+    transformer::ijk_rule(&our_pda, &mut result_cfg);
+    transformer::pair_rule(&our_pda, &mut result_cfg);
+
+    let seralized = serde_json::to_string_pretty(&result_cfg).unwrap();
 
     println!("generated: {}", seralized);
 

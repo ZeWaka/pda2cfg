@@ -105,14 +105,17 @@ pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
 
 /// For every stack symbol that could be pushed then popped, record states in the middle
 pub fn pair_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
-    for trans_a in pda.transitions.iter() {
-        'bloop: for trans_b in pda.transitions.iter() {
+    for trans_a in pda
+        .transitions
+        .iter()
+        .filter(|i| !i.input.eq(&"~".to_string())) // Ignore blanks
+    {
+        'bloop: for trans_b in pda
+            .transitions
+            .iter()
+            .filter(|i| !i.input.eq(&"~".to_string())) // Ignore blanks
+        {
             if trans_a.push.eq(&trans_b.pop) {
-                // ignore just getting rid of symbols
-                if trans_a.input.eq(&"~".to_string()) || trans_b.input.eq(&"~".to_string()) {
-                    continue;
-                }
-
                 let rule_desc = format!(
                     "{}A{}{}{}",
                     trans_a.input, trans_a.state, trans_b.state, trans_b.input

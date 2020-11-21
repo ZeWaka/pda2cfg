@@ -4,11 +4,11 @@ This project takes in a text description of a [Pushdown Automaton](https://en.wi
 
 ## Format
 Format of the PDA:`Q | Σ | Γ | q_0 | F | ∂`
-* Where Q is a finite set of states (x,y)
+* Where Q is a finite set of states (alphanumerics)
 * Where Σ is a finite set which is called the *input* alphabet (alphanumerics, $)
 * Where Γ is a finite set which is called the *stack* alphabet (alphanumerics, $)
-* Where q_0 ∈ Q is the start state (x)
-* Where F ⊆ Q is the set of accepting states (x,y)
+* Where q_0 ∈ Q is the start state (alphanumerics)
+* Where F ⊆ Q is the set of accepting states (alphanumerics)
 * Where ∂ is a finite subset of `Q × (Σ∪{ϵ}) × Γ × Q × Γ^*`, the *transition relation*
 * * `(state, input, symbol, next state, new symbol)`
 

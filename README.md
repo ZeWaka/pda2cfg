@@ -10,7 +10,7 @@ Format of the PDA:`Q | Σ | Γ | q_0 | F | ∂`
 * Where q_0 ∈ Q is the start state (alphanumerics)
 * Where F ⊆ Q is the set of accepting states (alphanumerics)
 * Where ∂ is a finite subset of `Q × (Σ∪{ϵ}) × Γ × Q × Γ^*`, the *transition relation*
-* * `(state, input, symbol, next state, new symbol)`
+* * `(state, input, pop, next state, push)`
 
 All sets are comma-seperated.
 Whitespace is ignored.

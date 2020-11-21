@@ -65,11 +65,11 @@ impl<> PDA<> {
 pub struct Trans<> {
     pub state: String,
     pub input: String,
-    pub symbol: String,
+    pub pop: String,
     pub next: String,
-    pub new: String,
+    pub push: String,
 }
 
 impl<> Trans<> {
-    pub fn new(state: String, input: String, symbol: String, next: String, new: String) -> Self { Self { state, input, symbol, next, new } }
+    pub fn new(state: String, input: String, symbol: String, next: String, new: String) -> Self { Self { state, input, pop: symbol, next, push: new } }
 }

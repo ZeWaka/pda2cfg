@@ -65,7 +65,7 @@ pub fn eps_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
         if state.eq("q_accept") { //Not necessary
             continue;
         }
-        cfg.rules.push(cfg::Grammar::new(format!("A_{}{}", state, state), pda::EPSILON.into()));
+        cfg.rules.push(cfg::Grammar::new(format!("A{}{}", state, state), pda::EPSILON.into()));
     }
 }
 
@@ -77,8 +77,8 @@ pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
                 if state_i.eq("q_accept") || state_j.eq("q_accept") || state_k.eq("q_accept") { // ignore created accept state
                     continue;
                 }
-                let rule_name = format!("A_{}{}", state_i, state_j);
-                let rule_desc = format!("A_{}{}A_{}{}", state_i, state_k, state_j, state_k);
+                let rule_name = format!("A{}{}", state_i, state_j);
+                let rule_desc = format!("A{}{}A{}{}", state_i, state_k, state_j, state_k);
 
                 let mut found = false;
                 for mut rule in cfg.rules.iter_mut() {
@@ -99,12 +99,12 @@ pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
 pub fn pair_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
     for trans_a in pda.transitions.iter() {
         for trans_b in pda.transitions.iter() {
-            if trans_a.new.eq(&trans_b.input) {
-                if trans_a.new.eq(&"~".to_string()) { // ignore blanks
+            if trans_a.push.eq(&trans_b.input) {
+                if trans_a.push.eq(&"~".to_string()) { // ignore blanks
                     continue;
                 }
-                let rule_desc = format!("{}A_{}{}{}", trans_a.new, trans_a.state, trans_b.state, trans_b.new);
-                let rule_name = format!("A_{}{}", trans_a.state, trans_b.state);
+                let rule_desc = format!("{}A{}{}{}", trans_a.push, trans_a.state, trans_b.state, trans_b.push);
+                let rule_name = format!("A{}{}", trans_a.state, trans_b.state);
 
                 let mut found = false;
                 for mut rule in cfg.rules.iter_mut() {

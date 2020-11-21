@@ -41,7 +41,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     transformer::single_accept(&mut our_pda);
 
     // Start generation of CFG
-    result_cfg.rules.push(cfg::Grammar::new("S".into(), format!("A_{}{}", our_pda.start_state.clone(), "q_accept")));
+    result_cfg.rules.push(cfg::Grammar::new("S".into(), format!("A_{}{}", our_pda.start_state.trim().clone(), "q_accept")));
 
     // Time for our rules
     transformer::eps_rule(&our_pda, &mut result_cfg);

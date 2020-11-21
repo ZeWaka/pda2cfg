@@ -26,5 +26,3 @@ pda = { states ~ "|" ~ ialpha ~ "|" ~ salpha ~ "|" ~ start ~ "|" ~ accept ~ "|" 
 file = { SOI ~ pda ~ EOI }
 
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" | "\r\n" }
-
-// Epsilon is ~

@@ -1,4 +1,3 @@
-extern crate serde;
 
 use serde::ser::{Serialize, Serializer, SerializeStruct};
 

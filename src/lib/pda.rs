@@ -1,6 +1,5 @@
-extern crate serde;
 
-use serde::{Serialize};
+use serde::Serialize;
 
 /// We represent epsilon transitions with a ~  (also blank input/output)
 pub static EPSILON: &'static str = "~";

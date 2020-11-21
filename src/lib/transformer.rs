@@ -1,7 +1,8 @@
 
+use snafu::Snafu;
+
 use crate::lib::pda;
 use crate::lib::cfg;
-use snafu::Snafu;
 
 #[derive(Debug, Snafu)]
 pub enum PDAError {

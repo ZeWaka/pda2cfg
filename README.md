@@ -22,5 +22,7 @@ To run, simply use Rust's `cargo run` feature, and provide the name of a file co
 
 To generate a pda2cfg.exe file, use `cargo build --release` which can then be ran from command-line and provided the PDA argument.
 
-## Contributing
+## Developing
 I used [Pest](https://pest.rs/) for the PDA parser, [Serde](https://serde.rs/) for the seralizer, and [SNAFU](https://docs.rs/crate/snafu) for broken error handling.
+
+Feel free to make a PR to the repository.

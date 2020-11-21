@@ -2,6 +2,9 @@ extern crate serde;
 
 use serde::{Serialize, Deserialize};
 
+/// We represent epsilon transitions with a ~
+pub static EPSILON: &'static str = "~";
+
 /// Our PDA struct
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PDA<> {
@@ -11,8 +14,22 @@ pub struct PDA<> {
     pub start_state: String,
     pub accept_states: Vec<String>,
     /// state, input, symbol, next, new
-    pub transitions: Vec<(String, String, String, String, String)>,
+    pub transitions: Vec<Trans>,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Trans<> {
+    pub state: String,
+    pub input: String,
+    pub symbol: String,
+    pub next: String,
+    pub new: String,
+}
+
+impl<> Trans<> {
+    pub fn new(state: String, input: String, symbol: String, next: String, new: String) -> Self { Self { state, input, symbol, next, new } }
+}
+
 
 impl<> PDA<> {
     /// When called, builds an empty PDA
@@ -53,7 +70,7 @@ impl<> PDA<> {
     }
 
     /// Sets transitions to given tuple vector
-    pub fn set_trans(&mut self, vec: Vec<(String, String, String, String, String)>) {
+    pub fn set_trans(&mut self, vec: Vec<Trans>) {
         for tuple in vec {
             self.transitions.push(tuple);
         }

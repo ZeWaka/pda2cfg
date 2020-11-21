@@ -22,34 +22,36 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     for pair in file.into_inner() {
         match pair.as_rule() {
-            Rule::pda => create_pda_struct(&mut result_pda, pair),
+            Rule::pda => setup_pda(&mut result_pda, pair),
             Rule::EOI => (),
             _ => unreachable!(),
         }
     }
 
+    // Prelim checks
+    if let Err(e) = transformer::ensure_accept_nostates(&result_pda) {
+        println!("{}", e);
+    }
+    if let Err(e) = transformer::single_accept(&mut result_pda) {
+        println!("{}", e);
+    }
     // Time for our rules
-    if let Err(e) = transformer::ensure_accept(&result_pda) {
-        println!("{}", e);
-    }
-    if let Err(e) = transformer::single_accept(&result_pda) {
-        println!("{}", e);
-    }
 
-    let seralized = serde_json::to_string(&result_pda).unwrap();
+    let seralized = serde_json::to_string_pretty(&result_pda).unwrap();
 
     println!("generated: {}", seralized);
 
     Ok(())
 }
 
-fn create_pda_struct(passed: &mut pda::PDA, pair: Pair<Rule>) -> () {
+/// Sets up our passed in PDA with data we get from pest
+fn setup_pda(passed: &mut pda::PDA, pair: Pair<Rule>) -> () {
     let mut states: Vec<String> = vec![];
     let mut input_alpha: Vec<String> = vec![];
     let mut stack_alpha: Vec<String> = vec![];
     let mut start_state: String = String::new();
     let mut accep_state: Vec<String> = vec![];
-    let mut transitions: Vec<(String, String, String, String, String)> = vec![];
+    let mut transitions: Vec<pda::Trans> = vec![];
 
     let pda = pair.into_inner();
     for inner in pda {
@@ -76,7 +78,9 @@ fn create_pda_struct(passed: &mut pda::PDA, pair: Pair<Rule>) -> () {
             },
             Rule::accept => {
                 for state in inner.into_inner() {
-                    accep_state.push(state.as_str().to_owned())
+                    for states in state.into_inner() { // Another layer of onion to peel
+                        accep_state.push(states.as_str().to_owned());
+                    }
                 }
             },
             Rule::trans => {
@@ -88,8 +92,7 @@ fn create_pda_struct(passed: &mut pda::PDA, pair: Pair<Rule>) -> () {
                     let t_symb: String = t_rules.next().unwrap().as_str().to_owned();
                     let t_next: String = t_rules.next().unwrap().as_str().to_owned();
                     let t_new: String = t_rules.next().unwrap().as_str().to_owned();
-                    let transition = (t_state, t_input, t_symb, t_next, t_new);
-                    transitions.push(transition);
+                    transitions.push(pda::Trans::new(t_state, t_input, t_symb, t_next, t_new));
                 }
             },
             _ => unreachable!(),

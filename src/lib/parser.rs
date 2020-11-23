@@ -1,28 +1,35 @@
 use pest::iterators::Pair;
 use pest::Parser;
 
-use std::error::Error;
-use std::fs;
+use colored::*;
+
+use std::panic;
+use std::{error::Error, fs::read_to_string};
 
 use crate::lib::cfg;
 use crate::lib::pda;
 use crate::lib::transformer;
+
+static PARSE_ERROR: &'static str =
+    "Error parsing: PDA input file does not conform to specification.";
 
 #[derive(Parser)]
 #[grammar = "pda.pest"]
 pub struct PDAParser;
 
 pub fn run(config: Config) -> Result<String, Box<dyn Error>> {
-    let contents = fs::read_to_string(config.filename)?;
+    let contents = read_to_string(config.filename)?;
 
-    let file = PDAParser::parse(Rule::file, &contents)
-        .expect("unsuccessful parse") // unwrap the parse result
-        .next()
-        .unwrap(); // get and unwrap the `file` rule; never fails
+    let file = parse_file(&contents);
+
+    let parsed_file = match file {
+        Some(p) => p,
+        None => return Ok(PARSE_ERROR.into()),
+    };
 
     let mut our_pda = pda::PDA::build();
 
-    for pair in file.into_inner() {
+    for pair in parsed_file.into_inner() {
         match pair.as_rule() {
             Rule::pda => setup_pda(&mut our_pda, pair),
             Rule::EOI => (),
@@ -56,6 +63,32 @@ pub fn run(config: Config) -> Result<String, Box<dyn Error>> {
     println!("{}", result);
 
     Ok(result)
+}
+
+/// Parses the pda string we give it, catches panic
+fn parse_file(contents: &String) -> Option<Pair<Rule>> {
+    panic::set_hook(Box::new(|_info| {
+        // do nothing
+    }));
+    let mut parsed: Option<Pair<Rule>> = None;
+    let result = panic::catch_unwind(panic::AssertUnwindSafe(|| {
+        parsed = Some(
+            PDAParser::parse(Rule::file, &contents)
+                .expect("parse error")
+                .next()
+                .unwrap(), // get and unwrap the `file` rule; never fails
+        );
+    }));
+
+    match result {
+        Ok(res) => res,
+        Err(_) => {
+            println!("{}", PARSE_ERROR.red());
+            return None;
+        }
+    }
+
+    return parsed;
 }
 
 /// Sets up our passed in PDA with data we get from pest

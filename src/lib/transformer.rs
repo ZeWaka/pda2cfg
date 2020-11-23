@@ -5,7 +5,7 @@ use crate::lib::pda;
 
 #[derive(Debug, Snafu)]
 pub enum PDAError {
-    #[snafu(display("No accept states"))]
+    #[snafu(display("No states"))]
     NoStates,
     #[snafu(display("No accept states found"))]
     NoAccept,

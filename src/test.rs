@@ -33,11 +33,11 @@ mod tests {
         test_conversion("/tests/test2.pda".into(), "/tests/test2.cfg".into());
     }
     #[test]
-    fn test_conversion_3() {
+    fn test_conversion_3_fail() {
         test_conversion("/tests/test3.pda".into(), "/tests/test3.cfg".into());
     }
     #[test]
-    fn test_conversion_4() {
+    fn test_conversion_4_fail() {
         test_conversion("/tests/test4.pda".into(), "/tests/test4.cfg".into());
     }
     #[test]

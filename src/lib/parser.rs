@@ -12,7 +12,7 @@ use crate::lib::transformer;
 #[grammar = "pda.pest"]
 pub struct PDAParser;
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+pub fn run(config: Config) -> Result<String, Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
 
     let file = PDAParser::parse(Rule::file, &contents)
@@ -52,9 +52,10 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     transformer::pair_rule(&our_pda, &mut result_cfg);
 
     // Print out result
-    println!("{}", serde_json::to_string_pretty(&result_cfg).unwrap());
+    let result = serde_json::to_string_pretty(&result_cfg).unwrap();
+    println!("{}", result);
 
-    Ok(())
+    Ok(result)
 }
 
 /// Sets up our passed in PDA with data we get from pest

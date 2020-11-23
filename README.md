@@ -18,11 +18,18 @@ Whitespace is ignored.
 `~` is a stand-in for epsilon transitions and the blank symbol.
 
 ## Running
-To run, simply use Rust's `cargo run` feature, and provide the name of a file containing the text description of your input PDA as the first argument.
+To run, simply use [Rust](https://www.rust-lang.org/)'s `cargo run` feature, and provide the name of a file containing the text description of your input PDA as the first argument.
 
 To generate a pda2cfg.exe file, use `cargo build --release` which can then be ran from command-line and provided the PDA argument.
+
+To run automated tests, use `cargo test` to automatically test the example PDA and CFG files.
 
 ## Developing
 I used [Pest](https://pest.rs/) for the PDA parser, [Serde](https://serde.rs/) for the seralizer, and [SNAFU](https://docs.rs/crate/snafu) for broken error handling.
 
+This project targets stable Rust.
+
 Feel free to make a PR to the repository.
+
+## License
+This project is licensed under the [ISC](https://choosealicense.com/licenses/isc/).

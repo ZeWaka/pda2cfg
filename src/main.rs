@@ -14,6 +14,7 @@ use std::env;
 use std::process;
 
 pub mod lib;
+pub mod test;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

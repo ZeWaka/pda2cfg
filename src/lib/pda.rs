@@ -2,6 +2,14 @@ use serde::Serialize;
 
 /// We represent epsilon transitions with a ~  (also blank input/output)
 pub static EPSILON: &'static str = "~";
+/// Tau = stack alphabet
+pub static TAU: &'static str = "Γ";
+/// pound/hash - used for ensuring we pop all
+pub static HASH: &'static str = "#";
+/// Start state we add
+pub static START: &'static str = "qS";
+/// Accept state we add
+pub static ACCEPT: &'static str = "qF";
 
 /// Our PDA struct
 #[derive(Debug, Serialize, Clone)]

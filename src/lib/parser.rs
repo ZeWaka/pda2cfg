@@ -45,12 +45,15 @@ pub fn run(config: Config) -> Result<String, Box<dyn Error>> {
     }
 
     // PDA modification
+    if let Err(e) = transformer::empty_stack(&mut our_pda) {
+        println!("{}", e);
+    }
     transformer::single_accept(&mut our_pda);
 
     // Start generation of CFG
     result_cfg.rules.push(cfg::Grammar::new(
         "S".into(),
-        format!("A_{}{}", our_pda.start_state.clone(), "q_accept"),
+        format!("A_{}{}", our_pda.start_state.clone(), pda::ACCEPT),
     ));
 
     // Time for our rules

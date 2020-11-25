@@ -147,7 +147,7 @@ pub fn pair_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
             if trans_a.push.eq(&trans_b.pop) {
                 let rule_desc = format!(
                     "{}A{}{}{}",
-                    trans_a.input, trans_a.state, trans_b.state, trans_b.input
+                    trans_a.input, trans_a.next, trans_b.next, trans_b.input
                 );
                 let rule_name = format!("A{}{}", trans_a.state, trans_b.state);
 

@@ -14,12 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+  
     - name: Build
       run: cargo build --verbose
-  
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build
+
+    - name: Test
       run: cargo test
+  

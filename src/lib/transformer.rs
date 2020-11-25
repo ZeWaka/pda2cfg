@@ -99,7 +99,7 @@ pub fn only_push_pop(pda: &mut pda::PDA) -> () {
             || !trans.push.eq(pda::EPSILON.into()) && !trans.pop.eq(pda::EPSILON.into())
         {
             let random: u16 = random();
-            let new_state = format!("{}_P{}", trans.state, random);
+            let new_state = format!("{}_P{}P", trans.state, random);
             pda.states.push(new_state.clone());
 
             let new_trans = pda::Trans::new(

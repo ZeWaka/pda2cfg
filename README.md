@@ -18,7 +18,7 @@ Whitespace is ignored.
 `~` is a stand-in for epsilon transitions and the blank symbol.
 
 ## Running
-To run, simply use [Rust](https://www.rust-lang.org/)'s `cargo run` feature, and provide the name of a file containing the text description of your input PDA as the first argument.
+To run, simply use [Rust](https://www.rust-lang.org/)'s `cargo run` feature, and provide the name of a file containing the text description of your input PDA as the first argument. There are also .exe files provided with each release for standalone running.
 
 To generate a pda2cfg.exe file, use `cargo build --release` which can then be ran from command-line and provided the PDA argument.
 

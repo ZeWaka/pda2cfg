@@ -49,6 +49,7 @@ pub fn run(config: Config) -> Result<String, Box<dyn Error>> {
         println!("{}", e);
     }
     transformer::single_accept(&mut our_pda);
+    transformer::only_push_pop(&mut our_pda);
 
     // Start generation of CFG
     result_cfg.rules.push(cfg::Grammar::new(

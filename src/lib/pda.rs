@@ -6,6 +6,9 @@ pub static EPSILON: &'static str = "~";
 pub static TAU: &'static str = "Γ";
 /// pound/hash - used for ensuring we pop all
 pub static HASH: &'static str = "#";
+/// percent sign - used for pop/push rule
+pub static SYMBOL: &'static str = "%";
+
 /// Start state we add
 pub static START: &'static str = "qS";
 /// Accept state we add
@@ -78,13 +81,13 @@ pub struct Trans {
 }
 
 impl Trans {
-    pub fn new(state: String, input: String, symbol: String, next: String, new: String) -> Self {
+    pub fn new(state: String, input: String, pop: String, next: String, push: String) -> Self {
         Self {
             state,
             input,
-            pop: symbol,
+            pop,
             next,
-            push: new,
+            push,
         }
     }
 }

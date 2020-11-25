@@ -3,6 +3,8 @@ use snafu::Snafu;
 use crate::lib::cfg;
 use crate::lib::pda;
 
+use rand::prelude::*;
+
 #[derive(Debug, Snafu)]
 pub enum PDAError {
     #[snafu(display("No states"))]
@@ -86,6 +88,35 @@ pub fn single_accept(pda: &mut pda::PDA) -> () {
     pda.accept_states.push(pda::START.into());
 }
 
+/**
+ * We need transitions to only push or pop a symbol. Not both, nor neither.
+ */
+pub fn only_push_pop(pda: &mut pda::PDA) -> () {
+    let mut to_append: Vec<pda::Trans> = vec![];
+    for trans in pda.transitions.iter_mut() {
+        // If neither or both push/pop
+        if trans.push.eq(pda::EPSILON.into()) && trans.pop.eq(pda::EPSILON.into())
+            || !trans.push.eq(pda::EPSILON.into()) && !trans.pop.eq(pda::EPSILON.into())
+        {
+            let random: u16 = random();
+            let new_state = format!("{}_P{}", trans.state, random);
+            pda.states.push(new_state.clone());
+
+            let new_trans = pda::Trans::new(
+                new_state.clone(),
+                pda::EPSILON.into(),
+                pda::SYMBOL.into(),
+                trans.next.clone(),
+                pda::EPSILON.into(),
+            );
+            trans.next = new_state;
+            trans.push = pda::SYMBOL.into();
+            to_append.push(new_trans);
+        }
+    }
+    pda.transitions.append(&mut to_append);
+}
+
 /// For every state, make an epsilon rule
 pub fn eps_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
     for state in pda
@@ -102,19 +133,11 @@ pub fn eps_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
 
 /// For every triplet of states, Aij -> AikAkj
 pub fn ijk_rule(pda: &pda::PDA, cfg: &mut cfg::CFG) -> () {
-    for state_i in pda
-        .states
-        .iter()
-        // Filter out our created accept state
+    for state_i in pda.states.iter()
+    // Filter out our created accept state
     {
-        for state_j in pda
-            .states
-            .iter()
-        {
-            'kloop: for state_k in pda
-                .states
-                .iter()
-            {
+        for state_j in pda.states.iter() {
+            'kloop: for state_k in pda.states.iter() {
                 let rule_name = format!("A{}{}", state_i, state_j);
                 let rule_desc = format!("A{}{}A{}{}", state_i, state_k, state_k, state_j);
 

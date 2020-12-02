@@ -12,7 +12,7 @@ mod tests {
     }
 
     /// Automatically tests conversion of a pda file to a cfg file
-    fn test_conversion(pda_path: String, cfg_path: String) {
+    fn test_conversion(pda_path: &str, cfg_path: &str) {
         let path = format!("{}{}", env!("CARGO_MANIFEST_DIR"), pda_path);
         let config = parser::Config { filename: path };
 
@@ -26,22 +26,22 @@ mod tests {
 
     #[test]
     fn test_conversion_1() {
-        test_conversion("/tests/test.pda".into(), "/tests/test.cfg".into());
+        test_conversion("/tests/test.pda", "/tests/test.cfg");
     }
     #[test]
     fn test_conversion_2() {
-        test_conversion("/tests/test2.pda".into(), "/tests/test2.cfg".into());
+        test_conversion("/tests/test2.pda", "/tests/test2.cfg");
     }
     #[test]
     fn test_conversion_3_fail() {
-        test_conversion("/tests/test3.pda".into(), "/tests/test3.cfg".into());
+        test_conversion("/tests/test3.pda", "/tests/test3.cfg");
     }
     #[test]
     fn test_conversion_4_fail() {
-        test_conversion("/tests/test4.pda".into(), "/tests/test4.cfg".into());
+        test_conversion("/tests/test4.pda", "/tests/test4.cfg");
     }
     #[test]
     fn test_conversion_5() {
-        test_conversion("/tests/test5.pda".into(), "/tests/test5.cfg".into());
+        test_conversion("/tests/test5.pda", "/tests/test5.cfg");
     }
 }
